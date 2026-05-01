@@ -2153,8 +2153,8 @@ void TFT_eSprite::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uin
 
       uint8_t  w  = pgm_read_byte(&glyph->width),
                h  = pgm_read_byte(&glyph->height);
-      int8_t   xo = pgm_read_byte(&glyph->xOffset),
-               yo = pgm_read_byte(&glyph->yOffset);
+      int16_t  xo = (int16_t)pgm_read_word(&glyph->xOffset),
+               yo = (int16_t)pgm_read_word(&glyph->yOffset);
 
       if (((x + xo + w * size - 1) < (_vpX - _xDatum)) || // Clip left
           ((y + yo + h * size - 1) < (_vpY - _yDatum)))   // Clip top

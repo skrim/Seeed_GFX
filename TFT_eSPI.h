@@ -1029,7 +1029,7 @@ protected:
 
   uint32_t fontsloaded; // Bit field of fonts loaded
 
-  uint8_t glyph_ab, // Smooth font glyph delta Y (height) above baseline
+  int16_t glyph_ab, // Smooth font glyph delta Y (height) above baseline
       glyph_bb;     // Smooth font glyph delta Y (height) below baseline
 
   bool isDigits;             // adjust bounding box for numbers to reduce visual jiggling

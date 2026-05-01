@@ -3651,7 +3651,7 @@ int16_t TFT_eSPI::textWidth(const char *string, uint8_t font)
           // If this is not the  last character or is a digit then use xAdvance
           if (*string  || isDigits) str_width += pgm_read_byte(&glyph->xAdvance);
           // Else use the offset plus width since this can be bigger than xAdvance
-          else str_width += ((int8_t)pgm_read_byte(&glyph->xOffset) + pgm_read_byte(&glyph->width));
+          else str_width += ((int16_t)pgm_read_word(&glyph->xOffset) + pgm_read_byte(&glyph->width));
         }
       }
     }
@@ -3808,8 +3808,8 @@ void TFT_eSPI::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32
       uint8_t  w  = pgm_read_byte(&glyph->width),
                h  = pgm_read_byte(&glyph->height);
                //xa = pgm_read_byte(&glyph->xAdvance);
-      int8_t   xo = pgm_read_byte(&glyph->xOffset),
-               yo = pgm_read_byte(&glyph->yOffset);
+      int16_t  xo = (int16_t)pgm_read_word(&glyph->xOffset),
+               yo = (int16_t)pgm_read_word(&glyph->yOffset);
       uint8_t  xx, yy, bits=0, bit=0;
       int16_t  xo16 = 0, yo16 = 0;
 
@@ -5688,7 +5688,7 @@ size_t TFT_eSPI::write(uint8_t utf8)
       uint8_t   w     = pgm_read_byte(&glyph->width),
                 h     = pgm_read_byte(&glyph->height);
       if((w > 0) && (h > 0)) { // Is there an associated bitmap?
-        int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset);
+        int16_t xo = (int16_t)pgm_read_word(&glyph->xOffset);
         if(textwrapX && ((cursor_x + textsize * (xo + w)) > width())) {
           // Drawing character would go off right edge; wrap to new line
           cursor_x  = 0;
@@ -6131,7 +6131,7 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8
   }
 
 
-  int8_t xo = 0;
+  int16_t xo = 0;
 #ifdef LOAD_GFXFF
   if (freeFont && (textcolor!=textbgcolor)) {
       cheight = (glyph_ab + glyph_bb) * textsize;
@@ -6145,7 +6145,7 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8
       if((c2 >= pgm_read_word(&gfxFont->first)) && (c2 <= pgm_read_word(&gfxFont->last) )) {
         c2 -= pgm_read_word(&gfxFont->first);
         GFXglyph *glyph = &(((GFXglyph *)pgm_read_dword(&gfxFont->glyph))[c2]);
-        xo = pgm_read_byte(&glyph->xOffset) * textsize;
+        xo = (int16_t)pgm_read_word(&glyph->xOffset) * textsize;
         // Adjust for negative xOffset
         if (xo > 0) xo = 0;
         else cwidth -= xo;
@@ -6425,9 +6425,9 @@ void TFT_eSPI::setFreeFont(const GFXfont *f)
   // Find the biggest above and below baseline offsets
   for (uint16_t c = 0; c < numChars; c++) {
     GFXglyph *glyph1  = &(((GFXglyph *)pgm_read_dword(&gfxFont->glyph))[c]);
-    int8_t ab = -pgm_read_byte(&glyph1->yOffset);
+    int16_t ab = -(int16_t)pgm_read_word(&glyph1->yOffset);
     if (ab > glyph_ab) glyph_ab = ab;
-    int8_t bb = pgm_read_byte(&glyph1->height) - ab;
+    int16_t bb = pgm_read_byte(&glyph1->height) - ab;
     if (bb > glyph_bb) glyph_bb = bb;
   }
 }

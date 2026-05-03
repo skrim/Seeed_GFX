@@ -2161,7 +2161,7 @@ void TFT_eSprite::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uin
         return;
 
       uint8_t  *bitmap = (uint8_t *)pgm_read_dword(&gfxFont->bitmap);
-      uint32_t bo = pgm_read_word(&glyph->bitmapOffset);
+      uint32_t bo = pgm_read_dword(&glyph->bitmapOffset);
 
       uint8_t  xx, yy, bits=0, bit=0;
       //uint8_t  xa = pgm_read_byte(&glyph->xAdvance);
